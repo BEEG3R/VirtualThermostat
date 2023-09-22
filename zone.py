@@ -17,14 +17,18 @@ class Zone():
         self.sensors = []
         self.heaters = []
         self.coolers = []
+        # treat the target temperature as a sensor, so that we get real-time updates
+        # when it's value changes, but can also read it's value at any time.
         self.target_temp_sensor = None
         return
 
     def setup_zone(self):
+        self.api.log('Zone {0} setup starting...'.format(self.name))
         self.setup_sensors()
         self.setup_heaters()
         self.setup_coolers()
         self.setup_target_temp()
+        self.api.log('Zone {0} setup is complete.'.format(self.name))
         return
 
     def setup_sensors(self):
@@ -53,11 +57,18 @@ class Zone():
         return
 
     def check_temperature(self):
+        '''
+        Main logic loop to determine if a heater or cooler needs to be turned on.
+        This averages the temperature of all temp sensors in the zone, compares that
+        average to the target temperature specified in Home Assistant, and based on the
+        heating mode, toggles a heater or cooler to bring the sensor readings up to 
+        (or down to) the target temperature.
+        '''
         self.api.log('Checking temperature of {0}'.format(self.name))
-        target_temp = float(self.target_temp_sensor.get_current_temp())
+        target_temp = float(self.target_temp_sensor.get_current_value())
         sum = 0
         for sensor in self.sensors:
-            sum += sensor.get_current_temp()
+            sum += sensor.get_current_value()
         average = sum / len(self.sensors)
         self.api.log('Zone {0} has average temp of {1} where target temp is {2}.'.format(self.name, average, target_temp))
         if average < target_temp:

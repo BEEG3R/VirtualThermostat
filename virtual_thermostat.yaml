@@ -1,0 +1,56 @@
+heat_mode_enum:
+  module: heat_modes
+  global: true
+
+sensor_module:
+  module: sensor
+  global: true
+
+heater_module:
+  module: heater
+  global: true
+
+cooler_module:
+  module: cooler
+  global: true
+
+zone_module:
+  module: zone
+  global: true
+  dependencies:
+    - sensor_module
+    - heater_module
+    - cooler_module
+
+virtual_thermostat:
+  module: main
+  class: VirtualThermostat
+  dependencies:
+    - heat_mode_enum
+    - zone_module
+  poll_interval_seconds: 60
+  # Heat Mode 1 = OFF, 2 = HEAT, 3 = COOL, 4 = HEAT & COOL
+  heat_mode: 2
+  zones:
+    - name: Basement
+      sensors:
+        - sensor.basement_temperature_sensor_temperature_3
+      heaters:
+        - light.boiler_relay_bank_light_3]
+      coolers: []
+      target_temp: input_number.basement_temperature_target
+    - name: "First Floor"
+      sensors:
+        - sensor.dining_room_temperature_sensor_temperature_3
+      heaters:
+        - light.boiler_relay_bank_light_2
+      coolers: []
+      target_temp: input_number.first_floor_temperature_target
+    - name: "Second Floor"
+      sensors:
+        - sensor.ewelink_th01_temperature_2
+        - sensor.ewelink_th01_temperature
+      heaters:
+        - light.boiler_relay_bank_light
+      coolers: []
+      target_temp: input_number.second_floor_temperature_target
