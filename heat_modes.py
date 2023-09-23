@@ -1,7 +1,7 @@
 from enum import Enum
 
 class HeatMode(Enum):
-    OFF = 1
-    HEAT = 2
-    COOL = 3
-    HEATCOOL = 4
+    OFF = 'Off'
+    HEAT = 'Heat'
+    COOL = 'Cool'
+    HEATCOOL = 'Heat & Cool'
