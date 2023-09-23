@@ -93,7 +93,7 @@ class Zone():
         return
 
     def toggle_heaters(self, enabled: bool):
-        self.api.log('Zone {0} is {1} the target temperature. Turning {2} all heaters in this zone.'.format(self.name, 'below' if enabled else 'above', 'on' if enabled else 'off'))
+        self.api.log('{0} is {1} the target temperature. Turning {2} all heaters in this zone.'.format(self.name, 'below' if enabled else 'above', 'on' if enabled else 'off'))
         for heater in self.heaters:
             if enabled:
                 heater.turn_on()
@@ -102,7 +102,7 @@ class Zone():
         return
 
     def toggle_coolers(self, enabled: bool):
-        self.api.log('Zone {0} is {1} the target temperature. Turning {2} all coolers in this zone.'.format(self.name, 'above' if enabled else 'below', 'off' if enabled else 'on'))
+        self.api.log('{0} is {1} the target temperature. Turning {2} all coolers in this zone.'.format(self.name, 'above' if enabled else 'below', 'on' if enabled else 'off'))
         for cooler in self.coolers:
             if enabled:
                 cooler.turn_on()
