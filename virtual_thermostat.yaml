@@ -35,7 +35,7 @@ virtual_thermostat:
       sensors:
         - sensor.basement_temperature_sensor_temperature_3
       heaters:
-        - light.boiler_relay_bank_light_3]
+        - light.boiler_relay_bank_light_3
       coolers: []
       target_temp: input_number.basement_temperature_target
     - name: "First Floor"
