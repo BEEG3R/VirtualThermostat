@@ -70,6 +70,7 @@ class Zone():
         '''
         mode = self.get_current_heat_mode()
         if not should_continue_temp_check(mode):
+            self.api.log('Current Heat Mode is {0}. Skipping {1} temperature check.'.format(mode, self.name))
             return
         target_temp = float(self.target_temp_sensor.get_current_value())
         sum = 0
