@@ -1,6 +1,7 @@
 import appdaemon.plugins.hass.hassapi as hass
 import datetime
 from zone import Zone
+from sensor import Sensor
 
 class VirtualThermostat(hass.Hass):
     def initialize(self):
