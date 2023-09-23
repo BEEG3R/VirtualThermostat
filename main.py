@@ -43,5 +43,5 @@ class VirtualThermostat(hass.Hass):
         return
 
     def setup_heat_mode_sensor(self):
-        self.heat_mode_sensor = Sensor(self.api, self.heat_mode_id)
+        self.heat_mode_sensor = Sensor(self, self.heat_mode_id)
         return
