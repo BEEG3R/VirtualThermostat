@@ -112,11 +112,11 @@ class Zone():
 
     def should_continue_temp_check(self, current_heat_mode: HeatMode) -> bool:
         if current_heat_mode == HeatMode.OFF:
-            toggle_heaters(False)
-            toggle_coolers(False)
+            self.toggle_heaters(False)
+            self.toggle_coolers(False)
             return False
         if current_heat_mode == HeatMode.HEAT:
-            toggle_coolers(False)
+            self.toggle_coolers(False)
         if current_heat_mode == HeatMode.COOL:
-            toggle_heaters(False)
+            self.toggle_heaters(False)
         return True
