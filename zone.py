@@ -5,10 +5,10 @@ from heater import Heater
 from cooler import Cooler
 
 class Zone():
-    def __init__(self, api: hass.Hass, name: str, mode: HeatMode, sensors, heaters, coolers, target_temp_id):
+    def __init__(self, api: hass.Hass, name: str, heat_mode_id: str, sensors, heaters, coolers, target_temp_id: str):
         self.api = api
         self.name = name
-        self.mode = mode
+        self.heat_mode_id = heat_mode_id
         self.sensor_ids = sensors
         self.heater_ids = heaters
         self.cooler_ids = coolers
@@ -20,6 +20,7 @@ class Zone():
         # treat the target temperature as a sensor, so that we get real-time updates
         # when it's value changes, but can also read it's value at any time.
         self.target_temp_sensor = None
+        self.heat_mode_sensor = None
         return
 
     def setup_zone(self):
@@ -28,6 +29,7 @@ class Zone():
         self.setup_heaters()
         self.setup_coolers()
         self.setup_target_temp()
+        self.setup_heat_mode()
         self.api.log('Zone {0} setup is complete.'.format(self.name))
         return
 
@@ -56,6 +58,22 @@ class Zone():
         self.target_temp_sensor = Sensor(self.api, self.target_temp_id)
         return
 
+    def setup_heat_mode(self):
+        self.heat_mode_sensor = Sensor(self.api, self.heat_mode_id)
+        return
+
+    def get_current_heat_mode(self) -> HeatMode:
+        current_value = self.heat_mode_sensor.get_current_value()
+        match current_value:
+            case 'Heat':
+                return HeatMode.HEAT
+            case 'Cool':
+                return HeatMode.COOL
+            case 'Heat & Cool':
+                return HeatMode.HEATCOOL
+            case default:
+                return HeatMode.OFF
+
     def check_temperature(self):
         '''
         Main logic loop to determine if a heater or cooler needs to be turned on.
@@ -68,20 +86,21 @@ class Zone():
         target_temp = float(self.target_temp_sensor.get_current_value())
         sum = 0
         for sensor in self.sensors:
-            sum += sensor.get_current_value()
+            sum += float(sensor.get_current_value())
         average = sum / len(self.sensors)
         self.api.log('Zone {0} has average temp of {1} where target temp is {2}.'.format(self.name, average, target_temp))
+        mode = self.get_current_heat_mode()
         if average < target_temp:
             # turn on the heat, or turn the AC off if the current heat mode allows for it
-            if self.mode == HeatMode.HEAT or self.mode == HeatMode.HEATCOOL:
+            if mode == HeatMode.HEAT or mode == HeatMode.HEATCOOL:
                 self.toggle_heaters(True)
-            if self.mode == HeatMode.COOL or self.mode == HeatMode.HEATCOOL:
+            if mode == HeatMode.COOL or mode == HeatMode.HEATCOOL:
                 self.toggle_coolers(False)
         if average > target_temp:
             # turn on the AC, or turn off the heat if the current heat mode allows for it
-            if self.mode == HeatMode.HEAT or self.mode == HeatMode.HEATCOOL:
+            if mode == HeatMode.HEAT or mode == HeatMode.HEATCOOL:
                 self.toggle_heaters(False)
-            if self.mode == HeatMode.COOL or self.mode == HeatMode.HEATCOOL:
+            if mode == HeatMode.COOL or mode == HeatMode.HEATCOOL:
                 self.toggle_coolers(True)
         return
 

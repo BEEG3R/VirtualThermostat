@@ -7,8 +7,7 @@ class VirtualThermostat(hass.Hass):
     def initialize(self):
         self.log('Initializing VirtualThermostat...')
         # Get app-level configuration values
-        self.mode = HeatMode(self.args['heat_mode'])
-        self.log('Found HeatMode {0}!'.format(self.mode))
+        self.heat_mode_id = self.args['heat_mode']
         self.interval = self.args['poll_interval_seconds']
         self.log('Found Poll Interval of {0} seconds!'.format(self.interval))
         self.zones = []
@@ -20,7 +19,7 @@ class VirtualThermostat(hass.Hass):
             heaters = zone['heaters']
             coolers = zone['coolers']
             target_temp_id = zone['target_temp']
-            zone_instance = Zone(self, name, self.mode, sensors, heaters, coolers, target_temp_id)
+            zone_instance = Zone(self, name, self.heat_mode_id, sensors, heaters, coolers, target_temp_id)
             self.zones.append(zone_instance)
             zone_instance.setup_zone()
         

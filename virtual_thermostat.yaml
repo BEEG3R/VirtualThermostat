@@ -29,8 +29,7 @@ virtual_thermostat:
     - heat_mode_enum
     - zone_module
   poll_interval_seconds: 60
-  # Heat Mode 1 = OFF, 2 = HEAT, 3 = COOL, 4 = HEAT & COOL
-  heat_mode: 2
+  heat_mode: input_select.heat_modes
   zones:
     - name: Basement
       sensors:
