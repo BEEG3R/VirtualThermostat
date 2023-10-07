@@ -41,6 +41,8 @@ virtual_thermostat:
     - name: "First Floor"
       sensors:
         - sensor.dining_room_temperature_sensor_temperature_3
+        - sensor.kitchen_temperature_sensor_temperature_3
+        - sensor.living_room_temperature_sensor_temperature
       heaters:
         - light.boiler_relay_bank_light_2
       coolers: []
@@ -49,6 +51,8 @@ virtual_thermostat:
       sensors:
         - sensor.ewelink_th01_temperature_2
         - sensor.ewelink_th01_temperature
+        - sensor.nursery_temperature_sensor_temperature
+        - sensor.east_bedroom_temperature_sensor_temperature
       heaters:
         - light.boiler_relay_bank_light
       coolers: []
