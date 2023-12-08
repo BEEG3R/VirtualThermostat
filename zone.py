@@ -74,9 +74,14 @@ class Zone():
             return
         target_temp = float(self.target_temp_sensor.get_current_value())
         sum = 0
+        sensor_count = 0
         for sensor in self.sensors:
-            sum += float(sensor.get_current_value())
-        average = sum / len(self.sensors)
+            try:
+                sum += float(sensor.get_current_value())
+                sensor_count += 1 
+            except:
+                self.api.log('Could not read current value from sensor {0}'.format(sensor.id))
+        average = sum / max(sensor_count, 1)
         self.api.log('{0} has an average temp of {1} where target temp is {2}.'.format(self.name, average, target_temp))
         if average < target_temp:
             # turn on the heat, or turn the AC off if the current heat mode allows for it
